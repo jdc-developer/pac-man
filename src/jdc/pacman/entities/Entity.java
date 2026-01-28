@@ -91,7 +91,7 @@ public abstract class Entity {
         Camera.y = Camera.clamp(this.getY() - (PacmanGame.HEIGHT / 2), 0, Map.HEIGHT*16 - PacmanGame.HEIGHT);
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics2D g) {
         g.drawImage(sprite, getX() - Camera.x, getY() - Camera.y, getWidth(), getHeight(), null);
         //g.setColor(Color.red);
         //g.fillRect(getX() + getMaskX() - Camera.x, getY() + getMaskY() - Camera.y, getMaskW(), getMaskH());

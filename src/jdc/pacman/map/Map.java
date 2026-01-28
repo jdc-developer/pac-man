@@ -11,7 +11,7 @@ public class Map {
 
     private static  Tile[] tiles;
     public static int WIDTH, HEIGHT;
-    public static final int TILE_SIZE = 16;
+    public static final int TILE_SIZE = 1;
 
     public Map(String path) {
         try {
@@ -24,28 +24,27 @@ public class Map {
             for (int xx = 0; xx < map.getWidth(); xx++) {
                 for (int yy = 0; yy < map.getHeight(); yy++) {
                     int pixel = pixels[xx + (yy * map.getWidth())];
-                    tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
+                    tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
 
                     switch (pixel) {
                         case 0xFF000000:
                             //Chão
-                            tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
+                            tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
                             break;
                         case 0xFFFFFFFF:
                             //Parede
-                            tiles[xx + (yy * WIDTH)] = new WallTile(xx * 16, yy * 16, Tile.TILE_WALL);
+                            tiles[xx + (yy * WIDTH)] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE);
                             break;
                         case 0xFF0000FF:
                             //Player
                             PacmanGame.player.setX(xx*16);
                             PacmanGame.player.setY(yy*16);
-                            System.out.println("AAA");
                             break;
                         case 0XFFFF0000:
                             //Enemy
                             break;
                         default:
-                            tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
+                            tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
                             break;
                     }
                 }

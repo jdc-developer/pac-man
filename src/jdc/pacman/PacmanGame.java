@@ -22,15 +22,14 @@ public class PacmanGame extends Canvas implements Runnable {
     public boolean isRunning;
     public Thread thread;
     private static JFrame frame;
-    public static final int WIDTH = 240;
-    public static final int HEIGHT = 160;
+    public static final int WIDTH = 200;
+    public static final int HEIGHT = 240;
     public static final int SCALE = 3;
 
     private BufferedImage image;
 
     public static java.util.List<Entity> entities;
     public static Spritesheet spritesheet;
-    public static Spritesheet tileset;
     public static Player player;
     public static Map world;
     public UI ui;
@@ -41,10 +40,9 @@ public class PacmanGame extends Canvas implements Runnable {
         initFrame();
 
         spritesheet = new Spritesheet("/spritesheet.png");
-        tileset = new Spritesheet("/tileset.png");
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         ui = new UI();
-        player = new Player(0, 0);
+        player = new Player(2, 2);
         keyboardCommands.setPlayer(player);
         addKeyListener(keyboardCommands);
         world = new Map("/level-1.png");
@@ -98,22 +96,23 @@ public class PacmanGame extends Canvas implements Runnable {
             return;
         }
         Graphics g = image.getGraphics();
-        g.setColor(new Color(19, 19, 19));
-        g.fillRect(0, 0, WIDTH, HEIGHT);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(new Color(19, 19, 19));
+        g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
         //RENDER GAME
-        world.render(g);
+        world.render(g2d);
         Collections.sort(entities, Entity.depthComparator);
         for(int i = 0; i < entities.size(); i++) {
             Entity e = entities.get(i);
-            e.render(g);
+            e.render(g2d);
         }
 
-        ui.render(g);
-        g.dispose();
-        g = bs.getDrawGraphics();
+        ui.render(g2d);
+        g2d.dispose();
+        g2d = (Graphics2D) bs.getDrawGraphics();
 
-        g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+        g2d.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
         bs.show();
     }
 

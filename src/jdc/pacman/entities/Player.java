@@ -5,38 +5,27 @@ import jdc.pacman.map.Map;
 import jdc.zelda.world.Camera;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
 
-    public static final float PLAYER_WIDTH = 29f;
-    public static final float PLAYER_HEIGHT = 43f;
+    public static final float PLAYER_SPRITE_WIDTH = 29f;
+    public static final float PLAYER_SPRITE_HEIGHT = 43f;
 
-    private BufferedImage[] rightAnimation = new BufferedImage[3];
-    private BufferedImage[] leftAnimation = new BufferedImage[3];
-    private BufferedImage[] upAnimation = new BufferedImage[3];
-    private BufferedImage[] downAnimation = new BufferedImage[3];
+    public static final float PLAYER_WIDTH = 29f / 2.5f;
+    public static final float PLAYER_HEIGHT = 43f / 2.5f;
+
+    private BufferedImage[] animation = new BufferedImage[3];
 
     private int frames = 0, maxFrames = 5, animationIndex = 0, maxAnimationIndex = 2;
 
     public Player(int x, int y) {
-        super(x, y, PLAYER_WIDTH / 2.5f, PLAYER_HEIGHT / 2.5f, 1.0f, PacmanGame.spritesheet
-                .getSprite(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT));
+        super(x, y, PLAYER_WIDTH, PLAYER_HEIGHT, 1.0f, PacmanGame.spritesheet
+                .getSprite(0, 0, PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT));
 
         for (int i = 0; i < 3; i++) {
-            rightAnimation[i] = PacmanGame.spritesheet.getSprite(758 , 37 + (i*PLAYER_HEIGHT), PLAYER_WIDTH, PLAYER_HEIGHT);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            leftAnimation[i] = PacmanGame.spritesheet.getSprite(758 , 293 + (i*PLAYER_HEIGHT), PLAYER_WIDTH, PLAYER_HEIGHT);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            upAnimation[i] = PacmanGame.spritesheet.getSprite(758 , 427 + (i*PLAYER_HEIGHT), PLAYER_WIDTH, PLAYER_HEIGHT);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            downAnimation[i] = PacmanGame.spritesheet.getSprite(758 , 165 + (i*PLAYER_HEIGHT), PLAYER_WIDTH, PLAYER_HEIGHT);
+            animation[i] = PacmanGame.spritesheet.getSprite(758 , 37 + (i*PLAYER_SPRITE_HEIGHT), PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT);
         }
 
         direction = Direction.RIGHT;
@@ -68,16 +57,23 @@ public class Player extends Entity {
     }
 
     @Override
-    public void render(Graphics g) {
-        if (direction.equals(Direction.RIGHT)) {
-            g.drawImage(rightAnimation[animationIndex], getX() - Camera.x, getY() - Camera.y - z, getWidth(), getHeight(), null);
-        } else if (direction.equals(Direction.LEFT)) {
-            g.drawImage(leftAnimation[animationIndex], getX() - Camera.x, getY() -  Camera.y - z, getWidth(), getHeight(),null);
+    public void render(Graphics2D g) {
+        AffineTransform originalTransform = g.getTransform();
+        float centerX = getX() + (getWidth() / 2f);
+        float centerY = getY() + (getHeight() / 2f);
+
+        if (direction.equals(Direction.LEFT)) {
+            double angle = Math.toRadians(180);
+            g.rotate(angle, centerX, centerY);
         } else if (direction.equals(Direction.UP)) {
-            g.drawImage(upAnimation[animationIndex], getX() - Camera.x, getY() -  Camera.y - z, getWidth(), getHeight(),null);
+            double angle = Math.toRadians(270);
+            g.rotate(angle, centerX, centerY);
         } else if (direction.equals(Direction.DOWN)) {
-            g.drawImage(downAnimation[animationIndex], getX() - Camera.x, getY() -  Camera.y - z, getWidth(), getHeight(),null);
+            double angle = Math.toRadians(90);
+            g.rotate(angle, centerX, centerY);
         }
+        g.drawImage(animation[animationIndex], getX() - Camera.x, getY() - Camera.y - z, getWidth(), getHeight(), null);
+        g.setTransform(originalTransform);
 
     }
 
