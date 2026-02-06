@@ -1,13 +1,9 @@
 package jdc.pacman.entities;
 
-import jdc.pacman.PacmanGame;
-import jdc.pacman.map.Camera;
-import jdc.pacman.map.Map;
 import jdc.pacman.map.Node;
 import jdc.pacman.map.Vector2i;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.Comparator;
 import java.util.List;
 
@@ -17,23 +13,26 @@ public abstract class Entity {
     protected double y;
     protected float width;
     protected float height;
-    protected int z;
     protected float speed;
     protected Direction direction;
+
+    protected float maskWidth;
+    protected float maskHeight;
+    protected double maskX;
+    protected double maskY;
 
     protected int depth;
 
     protected List<Node> path;
 
-    private BufferedImage sprite;
-
-    public Entity(double x, double y, float width, float height, float speed, BufferedImage sprite) {
+    public Entity(double x, double y, float width, float height, float speed, float maskWidth, float maskHeight) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.sprite = sprite;
         this.speed = speed;
+        this.maskWidth = maskWidth;
+        this.maskHeight = maskHeight;
     }
 
     public static Comparator<Entity> depthComparator = new Comparator<Entity>(){
@@ -59,7 +58,7 @@ public abstract class Entity {
         Rectangle rec1 = new Rectangle(e1.getX(), e1.getY(), e1.getWidth(), e1.getHeight());
         Rectangle rec2 = new Rectangle(e2.getX(), e2.getY(), e2.getWidth(), e2.getHeight());
 
-        if (rec1.intersects(rec2) && e1.z == e2.z) {
+        if (rec1.intersects(rec2)) {
             return true;
         }
 
@@ -86,16 +85,7 @@ public abstract class Entity {
         }
     }
 
-    public void updateCamera() {
-        Camera.x = Camera.clamp(this.getX() - (PacmanGame.WIDTH / 2), 0, Map.WIDTH*16 - PacmanGame.WIDTH);
-        Camera.y = Camera.clamp(this.getY() - (PacmanGame.HEIGHT / 2), 0, Map.HEIGHT*16 - PacmanGame.HEIGHT);
-    }
-
-    public void render(Graphics2D g) {
-        g.drawImage(sprite, getX() - Camera.x, getY() - Camera.y, getWidth(), getHeight(), null);
-        //g.setColor(Color.red);
-        //g.fillRect(getX() + getMaskX() - Camera.x, getY() + getMaskY() - Camera.y, getMaskW(), getMaskH());
-    }
+    public abstract void render(Graphics2D g);
 
     public int getX() {
         return (int)x;
@@ -139,5 +129,37 @@ public abstract class Entity {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public int getMaskWidth() {
+        return (int)maskWidth;
+    }
+
+    public void setMaskWidth(float maskWidth) {
+        this.maskWidth = maskWidth;
+    }
+
+    public int getMaskHeight() {
+        return (int)maskHeight;
+    }
+
+    public void setMaskHeight(float maskHeight) {
+        this.maskHeight = maskHeight;
+    }
+
+    public int getMaskX() {
+        return (int)maskX;
+    }
+
+    public void setMaskX(double maskX) {
+        this.maskX = maskX;
+    }
+
+    public int getMaskY() {
+        return (int)maskY;
+    }
+
+    public void setMaskY(double maskY) {
+        this.maskY = maskY;
     }
 }

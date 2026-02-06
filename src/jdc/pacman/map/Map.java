@@ -1,6 +1,7 @@
 package jdc.pacman.map;
 
 import jdc.pacman.PacmanGame;
+import jdc.pacman.entities.Direction;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -24,7 +25,7 @@ public class Map {
             for (int xx = 0; xx < map.getWidth(); xx++) {
                 for (int yy = 0; yy < map.getHeight(); yy++) {
                     int pixel = pixels[xx + (yy * map.getWidth())];
-                    tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
+                    //tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
 
                     switch (pixel) {
                         case 0xFF000000:
@@ -43,9 +44,6 @@ public class Map {
                         case 0XFFFF0000:
                             //Enemy
                             break;
-                        default:
-                            tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
-                            break;
                     }
                 }
             }
@@ -55,14 +53,8 @@ public class Map {
     }
 
     public void render(Graphics g) {
-        int xstart = Camera.x >> 4;
-        int ystart = Camera.y >> 4;
-
-        int xfinal = xstart + PacmanGame.WIDTH >> 3;
-        int yfinal = ystart + PacmanGame.HEIGHT >> 3;
-
-        for (int xx = xstart; xx <= WIDTH; xx++) {
-            for (int yy = ystart; yy <= HEIGHT; yy++) {
+        for (int xx = 0; xx <= WIDTH; xx++) {
+            for (int yy = 0; yy <= HEIGHT; yy++) {
                 if (xx < 0 || yy < 0 || xx >= WIDTH || yy >= HEIGHT)
                     continue;
                 Tile tile = tiles[xx + (yy * WIDTH)];
@@ -71,24 +63,43 @@ public class Map {
         }
     }
 
-    public static boolean isFree(int xnext,int ynext){
+    public static boolean checkCollision(int xNext, int yNext, Rectangle playerRect, Direction direction) {
+        double playerRectEdge;
 
-        int x1 = xnext / TILE_SIZE;
-        int y1 = ynext / TILE_SIZE;
+        if (Direction.UP.equals(direction) || Direction.DOWN.equals(direction)) playerRectEdge = playerRect.getWidth();
+        else playerRectEdge = playerRect.getHeight();
 
-        int x2 = (xnext+TILE_SIZE-1) / TILE_SIZE;
-        int y2 = ynext / TILE_SIZE;
+        for (int i = 0; i < playerRectEdge; i++) {
+            int verifyX = 0;
+            int verifyY = 0;
 
-        int x3 = xnext / TILE_SIZE;
-        int y3 = (ynext+TILE_SIZE-1) / TILE_SIZE;
+            switch (direction) {
+                case UP:
+                    verifyX = (xNext - 1) + i;
+                    verifyY = yNext;
+                    break;
+                case DOWN:
+                    verifyX = (xNext - 1) + i;
+                    verifyY = (yNext + 1 + (int)playerRect.getHeight());
+                    break;
+                case RIGHT:
+                    verifyX = (xNext + (int)playerRect.getWidth());
+                    verifyY = yNext + i;
+                    break;
+                case LEFT:
+                    verifyX = xNext - 2;
+                    verifyY = yNext + i;
+                    break;
+            }
+            Tile tile = tiles[verifyX + (verifyY * WIDTH)];
 
-        int x4 = (xnext+TILE_SIZE-1) / TILE_SIZE;
-        int y4 = (ynext+TILE_SIZE-1) / TILE_SIZE;
+            if (tile instanceof WallTile) {
+                tile.setHasHit(true);
+                return false;
+            }
+        }
 
-        return !((tiles[x1 + (y1*WIDTH)] instanceof WallTile) ||
-                (tiles[x2 + (y2*WIDTH)] instanceof WallTile) ||
-                (tiles[x3 + (y3*WIDTH)] instanceof WallTile) ||
-                (tiles[x4 + (y4*WIDTH)] instanceof WallTile));
+        return true;
     }
 
     public static Tile[] getTiles() {

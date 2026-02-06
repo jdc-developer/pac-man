@@ -22,8 +22,8 @@ public class PacmanGame extends Canvas implements Runnable {
     public boolean isRunning;
     public Thread thread;
     private static JFrame frame;
-    public static final int WIDTH = 200;
-    public static final int HEIGHT = 240;
+    public static final int WIDTH = 201;
+    public static final int HEIGHT = 241;
     public static final int SCALE = 3;
 
     private BufferedImage image;
@@ -42,7 +42,7 @@ public class PacmanGame extends Canvas implements Runnable {
         spritesheet = new Spritesheet("/spritesheet.png");
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         ui = new UI();
-        player = new Player(2, 2);
+        player = new Player(50, 50);
         keyboardCommands.setPlayer(player);
         addKeyListener(keyboardCommands);
         world = new Map("/level-1.png");

@@ -1,12 +1,11 @@
 package jdc.pacman.entities;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class Enemy extends Entity {
 
-    public Enemy(double x, double y, float width, float height, BufferedImage sprite) {
-        super(x, y, width, height, 1.0f, sprite);
+    public Enemy(double x, double y, float width, float height) {
+        super(x, y, width, height, 1.0f, 10f, 10f);
     }
 
     public void tick() {
@@ -28,7 +27,7 @@ public class Enemy extends Entity {
 
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics2D g) {
 
     }
 }
