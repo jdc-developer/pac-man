@@ -81,9 +81,6 @@ public class Player extends Entity {
 
         g.setTransform(originalTransform);
 
-        g.setColor(Color.white);
-        g.drawRect((int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
-
     }
 
 }

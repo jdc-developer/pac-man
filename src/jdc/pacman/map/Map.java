@@ -25,7 +25,7 @@ public class Map {
             for (int xx = 0; xx < map.getWidth(); xx++) {
                 for (int yy = 0; yy < map.getHeight(); yy++) {
                     int pixel = pixels[xx + (yy * map.getWidth())];
-                    //tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
+                    tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
 
                     switch (pixel) {
                         case 0xFF000000:
@@ -38,8 +38,8 @@ public class Map {
                             break;
                         case 0xFF0000FF:
                             //Player
-                            PacmanGame.player.setX(xx*16);
-                            PacmanGame.player.setY(yy*16);
+                            PacmanGame.player.setX(xx);
+                            PacmanGame.player.setY(yy);
                             break;
                         case 0XFFFF0000:
                             //Enemy
@@ -83,7 +83,7 @@ public class Map {
                     verifyY = (yNext + 1 + (int)playerRect.getHeight());
                     break;
                 case RIGHT:
-                    verifyX = (xNext + (int)playerRect.getWidth());
+                    verifyX = (xNext + (int)playerRect.getWidth() - 1);
                     verifyY = yNext + i;
                     break;
                 case LEFT:
