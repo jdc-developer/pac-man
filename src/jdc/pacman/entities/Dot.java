@@ -5,7 +5,6 @@ import java.awt.*;
 public class Dot extends Entity {
 
     private Player player;
-    private Rectangle rect;
     private boolean shouldVanish;
 
     public Dot(double x, double y, float width, float height, Player player) {
@@ -25,7 +24,7 @@ public class Dot extends Entity {
         g.drawRect(getX(), getY(), getWidth(), getHeight());
     }
 
-    public boolean isShouldVanish() {
+    public boolean shouldVanish() {
         return shouldVanish;
     }
 }

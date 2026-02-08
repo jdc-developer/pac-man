@@ -4,6 +4,7 @@ import java.awt.*;
 
 public class WallTile extends Tile {
 
+    private boolean hasHit;
     private static final Color WALL_COLOR = new Color(61, 61, 181);
 
     public WallTile(int x, int y) {
@@ -24,5 +25,13 @@ public class WallTile extends Tile {
 
         g.setColor(WALL_COLOR);
         g.drawRect(x, y, 1, 1);
+    }
+
+    public boolean hasHit() {
+        return hasHit;
+    }
+
+    public void setHasHit(boolean hasHit) {
+        this.hasHit = hasHit;
     }
 }

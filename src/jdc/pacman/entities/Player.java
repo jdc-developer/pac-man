@@ -12,13 +12,10 @@ public class Player extends Entity {
     public static final float PLAYER_SPRITE_WIDTH = 29f;
     public static final float PLAYER_SPRITE_HEIGHT = 43f;
 
-    public static final float PLAYER_WIDTH = 29f / 2.5f;
-    public static final float PLAYER_HEIGHT = 43f / 2.5f;
+    public static final float PLAYER_WIDTH = PLAYER_SPRITE_WIDTH / 2.5f;
+    public static final float PLAYER_HEIGHT = PLAYER_SPRITE_HEIGHT / 2.5f;
 
     private BufferedImage[] animation = new BufferedImage[3];
-    private Rectangle rect;
-
-    private int frames = 0, maxFrames = 5, animationIndex = 0, maxAnimationIndex = 2;
 
     public Player(int x, int y) {
         super(x, y, PLAYER_WIDTH, PLAYER_HEIGHT, 1.0f, 14f, 14f);

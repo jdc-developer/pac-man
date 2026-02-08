@@ -3,7 +3,8 @@ package jdc.pacman.map;
 import jdc.pacman.PacmanGame;
 import jdc.pacman.entities.Direction;
 import jdc.pacman.entities.Dot;
-import jdc.pacman.entities.Player;
+import jdc.pacman.entities.Enemy;
+import jdc.pacman.entities.EnemyType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -27,25 +28,26 @@ public class Map {
             for (int xx = 0; xx < map.getWidth(); xx++) {
                 for (int yy = 0; yy < map.getHeight(); yy++) {
                     int pixel = pixels[xx + (yy * map.getWidth())];
-                    tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
+                    tiles[xx + (yy * WIDTH)] = new Tile(xx * TILE_SIZE, yy * TILE_SIZE);
 
                     switch (pixel) {
                         case 0xFF000000:
-                            //Chão
-                            tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE);
+                            tiles[xx + (yy * WIDTH)] = new Tile(xx * TILE_SIZE, yy * TILE_SIZE);
                             break;
                         case 0xFFFFFFFF:
-                            //Parede
                             tiles[xx + (yy * WIDTH)] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE);
                             break;
                         case 0xFF0000FF:
-                            //Player
                             PacmanGame.player.setX(xx);
                             PacmanGame.player.setY(yy);
                             break;
                         case 0XFFDFEC0C:
                             Dot dot = new Dot(xx, yy, 1, 1, PacmanGame.player);
                             PacmanGame.entities.add(dot);
+                            break;
+                        case 0XFFFF0000:
+                            Enemy enemy = new Enemy(xx, yy, EnemyType.BLUE);
+                            PacmanGame.entities.add(enemy);
                             break;
                     }
                 }
@@ -97,7 +99,8 @@ public class Map {
             Tile tile = tiles[verifyX + (verifyY * WIDTH)];
 
             if (tile instanceof WallTile) {
-                tile.setHasHit(true);
+                WallTile wallTile = (WallTile) tile;
+                wallTile.setHasHit(true);
                 return false;
             }
         }

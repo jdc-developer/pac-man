@@ -1,11 +1,7 @@
 package jdc.pacman.entities;
 
-import jdc.pacman.map.Node;
-import jdc.pacman.map.Vector2i;
-
 import java.awt.*;
 import java.util.Comparator;
-import java.util.List;
 
 public abstract class Entity {
 
@@ -20,10 +16,10 @@ public abstract class Entity {
     protected float maskHeight;
     protected double maskX;
     protected double maskY;
+    protected Rectangle rect;
 
+    protected int frames = 0, maxFrames = 5, animationIndex = 0, maxAnimationIndex = 2;
     protected int depth;
-
-    protected List<Node> path;
 
     public Entity(double x, double y, float width, float height, float speed, float maskWidth, float maskHeight) {
         this.x = x;
@@ -44,41 +40,6 @@ public abstract class Entity {
             return 0;
         }
     };
-
-    public double calculateDistance(int x1, int y1, int x2, int y2) {
-        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    }
-
-    public static boolean isColliding(Entity e1, Entity e2) {
-        Rectangle rec1 = new Rectangle(e1.getX(), e1.getY(), e1.getWidth(), e1.getHeight());
-        Rectangle rec2 = new Rectangle(e2.getX(), e2.getY(), e2.getWidth(), e2.getHeight());
-
-        if (rec1.intersects(rec2)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public void followPath(List<Node> path) {
-        if (path != null) {
-            if (!path.isEmpty()) {
-                Vector2i target = path.get(path.size() - 1).tile;
-                //xprev = x;
-                //yprev = y;
-
-                if (x < target.x * 16) x++;
-                else if (x > target.x * 16) x--;
-
-                if (y < target.y * 16) y++;
-                else if (y > target.y * 16) y--;
-
-                if (x == target.x * 16 && y == target.y * 16) {
-                    path.remove(path.size() - 1);
-                }
-            }
-        }
-    }
 
     public abstract void tick();
     public abstract void render(Graphics2D g);

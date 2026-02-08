@@ -90,7 +90,7 @@ public class PacmanGame extends Canvas implements Runnable {
             e.tick();
             if (e instanceof Dot) {
                 Dot dot = (Dot) e;
-                if (dot.isShouldVanish()) entities.remove(e);
+                if (dot.shouldVanish()) entities.remove(e);
             }
         }
     }
