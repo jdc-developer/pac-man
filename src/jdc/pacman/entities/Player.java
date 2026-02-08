@@ -27,11 +27,12 @@ public class Player extends Entity {
             animation[i] = PacmanGame.spritesheet.getSprite(758 , 37 + (i*PLAYER_SPRITE_HEIGHT), PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT);
         }
 
+        rect = new Rectangle(getX(), getY(), getMaskWidth(), getMaskHeight());
         direction = Direction.RIGHT;
     }
 
     public void tick() {
-        rect = new Rectangle(getX(), getY(), getMaskWidth(), getMaskHeight());
+        rect.setBounds(getX(), getY(), getMaskWidth(), getMaskHeight());
         if (direction.equals(Direction.RIGHT) && Map.checkCollision((getX() + getSpeed()), getY(), rect, Direction.RIGHT)) {
             x += speed;
         }
@@ -64,8 +65,9 @@ public class Player extends Entity {
         AffineTransform originalTransform = g.getTransform();
         float centerX = getX() + (getWidth() / 2f);
         float centerY = getY() + (getHeight() / 2f);
-        g.setColor(Color.red);
-        g.drawRect(getMaskX(), getMaskY(), getMaskWidth(), getMaskHeight());
+
+        /*g.setColor(Color.red);
+        g.drawRect(getMaskX(), getMaskY(), getMaskWidth(), getMaskHeight());*/
 
         if (direction.equals(Direction.LEFT)) {
             double angle = Math.toRadians(180);
@@ -77,10 +79,13 @@ public class Player extends Entity {
             double angle = Math.toRadians(90);
             g.rotate(angle, centerX, centerY);
         }
-        g.drawImage(animation[animationIndex], getX(), getY(), getWidth(), getHeight(), null);
 
+        g.drawImage(animation[animationIndex], getX(), getY(), getWidth(), getHeight(), null);
         g.setTransform(originalTransform);
 
     }
 
+    public Rectangle getRect() {
+        return rect;
+    }
 }

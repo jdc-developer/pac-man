@@ -2,6 +2,8 @@ package jdc.pacman.map;
 
 import jdc.pacman.PacmanGame;
 import jdc.pacman.entities.Direction;
+import jdc.pacman.entities.Dot;
+import jdc.pacman.entities.Player;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -41,8 +43,9 @@ public class Map {
                             PacmanGame.player.setX(xx);
                             PacmanGame.player.setY(yy);
                             break;
-                        case 0XFFFF0000:
-                            //Enemy
+                        case 0XFFDFEC0C:
+                            Dot dot = new Dot(xx, yy, 1, 1, PacmanGame.player);
+                            PacmanGame.entities.add(dot);
                             break;
                     }
                 }

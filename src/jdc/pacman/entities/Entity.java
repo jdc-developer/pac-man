@@ -45,11 +45,6 @@ public abstract class Entity {
         }
     };
 
-
-    public void tick() {
-
-    }
-
     public double calculateDistance(int x1, int y1, int x2, int y2) {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }
@@ -85,6 +80,7 @@ public abstract class Entity {
         }
     }
 
+    public abstract void tick();
     public abstract void render(Graphics2D g);
 
     public int getX() {
@@ -107,16 +103,8 @@ public abstract class Entity {
         return (int)width;
     }
 
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
     public int getHeight() {
         return (int)height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
     }
 
     public int getSpeed() {
@@ -135,31 +123,8 @@ public abstract class Entity {
         return (int)maskWidth;
     }
 
-    public void setMaskWidth(float maskWidth) {
-        this.maskWidth = maskWidth;
-    }
 
     public int getMaskHeight() {
         return (int)maskHeight;
-    }
-
-    public void setMaskHeight(float maskHeight) {
-        this.maskHeight = maskHeight;
-    }
-
-    public int getMaskX() {
-        return (int)maskX;
-    }
-
-    public void setMaskX(double maskX) {
-        this.maskX = maskX;
-    }
-
-    public int getMaskY() {
-        return (int)maskY;
-    }
-
-    public void setMaskY(double maskY) {
-        this.maskY = maskY;
     }
 }

@@ -1,6 +1,7 @@
 package jdc.pacman;
 
 import jdc.pacman.commands.KeyboardCommands;
+import jdc.pacman.entities.Dot;
 import jdc.pacman.entities.Entity;
 import jdc.pacman.entities.Player;
 import jdc.pacman.graphics.Spritesheet;
@@ -45,8 +46,9 @@ public class PacmanGame extends Canvas implements Runnable {
         player = new Player(0,0);
         keyboardCommands.setPlayer(player);
         addKeyListener(keyboardCommands);
-        world = new Map("/level-1.png");
         entities = new ArrayList<>();
+        world = new Map("/level-1.png");
+
 
         entities.add(player);
     }
@@ -86,6 +88,10 @@ public class PacmanGame extends Canvas implements Runnable {
         for(int i = 0; i < entities.size(); i++) {
             Entity e = entities.get(i);
             e.tick();
+            if (e instanceof Dot) {
+                Dot dot = (Dot) e;
+                if (dot.isShouldVanish()) entities.remove(e);
+            }
         }
     }
 
