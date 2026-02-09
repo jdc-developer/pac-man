@@ -14,5 +14,11 @@ public class Tile {
 
     public void render(Graphics g) {}
 
+    public int getX() {
+        return x;
+    }
 
+    public int getY() {
+        return y;
+    }
 }

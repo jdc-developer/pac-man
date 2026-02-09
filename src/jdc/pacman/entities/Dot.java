@@ -11,6 +11,7 @@ public class Dot extends Entity {
         super(x, y, width, height, 0, 0, 0);
         this.player = player;
         rect = new Rectangle(getX(), getY(), getWidth(), getHeight());
+        depth = 1;
     }
 
     @Override

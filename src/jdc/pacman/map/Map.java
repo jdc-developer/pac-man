@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import static java.util.Objects.isNull;
+
 public class Map {
 
     private static  Tile[] tiles;
@@ -46,7 +48,7 @@ public class Map {
                             PacmanGame.entities.add(dot);
                             break;
                         case 0XFFFF0000:
-                            Enemy enemy = new Enemy(xx, yy, EnemyType.BLUE);
+                            Enemy enemy = new Enemy(xx, yy, EnemyType.PURPLE);
                             PacmanGame.entities.add(enemy);
                             break;
                     }
@@ -68,31 +70,31 @@ public class Map {
         }
     }
 
-    public static boolean checkCollision(int xNext, int yNext, Rectangle playerRect, Direction direction) {
-        double playerRectEdge;
+    public static boolean checkCollision(int xNext, int yNext, Rectangle rect, Direction direction) {
+        double rectEdge;
 
-        if (Direction.UP.equals(direction) || Direction.DOWN.equals(direction)) playerRectEdge = playerRect.getWidth();
-        else playerRectEdge = playerRect.getHeight();
+        if (Direction.UP.equals(direction) || Direction.DOWN.equals(direction)) rectEdge = rect.getWidth();
+        else rectEdge = rect.getHeight();
 
-        for (int i = 0; i < playerRectEdge; i++) {
+        for (int i = 0; i < rectEdge; i++) {
             int verifyX = 0;
             int verifyY = 0;
 
             switch (direction) {
                 case UP:
-                    verifyX = (xNext - 1) + i;
+                    verifyX = xNext + i;
                     verifyY = yNext;
                     break;
                 case DOWN:
-                    verifyX = (xNext - 1) + i;
-                    verifyY = (yNext + 1 + (int)playerRect.getHeight());
+                    verifyX = xNext + i;
+                    verifyY = yNext + (int)rect.getHeight() - 1;
                     break;
                 case RIGHT:
-                    verifyX = (xNext + (int)playerRect.getWidth() - 1);
+                    verifyX = xNext + (int)rect.getWidth();
                     verifyY = yNext + i;
                     break;
                 case LEFT:
-                    verifyX = xNext - 2;
+                    verifyX = xNext;
                     verifyY = yNext + i;
                     break;
             }
@@ -106,6 +108,26 @@ public class Map {
         }
 
         return true;
+    }
+
+    public static Tile getClosestOpenedTile(int x, int y, Rectangle rect, Direction direction) {
+        if (Direction.UP.equals(direction)) {
+            int startX = x + (int)rect.getWidth();
+
+            for (int i = 0; i < WIDTH; i++) {
+                int verifyX = startX + i;
+                Tile tile = tiles[verifyX + (y * WIDTH)];
+                if (!(tile instanceof WallTile)) return tile;
+            }
+
+            for (int i = 0; i < WIDTH; i++) {
+                int verifyX = startX - i;
+                Tile tile = tiles[verifyX + (y * WIDTH)];
+                if (!(tile instanceof WallTile)) return tile;
+            }
+        }
+
+        return null;
     }
 
     public static Tile[] getTiles() {

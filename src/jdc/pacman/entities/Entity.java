@@ -20,6 +20,7 @@ public abstract class Entity {
 
     protected int frames = 0, maxFrames = 5, animationIndex = 0, maxAnimationIndex = 2;
     protected int depth;
+    protected boolean isAnimated;
 
     public Entity(double x, double y, float width, float height, float speed, float maskWidth, float maskHeight) {
         this.x = x;
@@ -41,7 +42,18 @@ public abstract class Entity {
         }
     };
 
-    public abstract void tick();
+    public void tick() {
+        if (isAnimated) {
+            frames++;
+
+            if (frames == maxFrames) {
+                frames = 0;
+                animationIndex++;
+
+                if (animationIndex > maxAnimationIndex) animationIndex = 0;
+            }
+        }
+    };
     public abstract void render(Graphics2D g);
 
     public int getX() {
@@ -87,5 +99,13 @@ public abstract class Entity {
 
     public int getMaskHeight() {
         return (int)maskHeight;
+    }
+
+    public int getMaskX() {
+        return (int)maskX;
+    }
+
+    public int getMaskY() {
+        return (int)maskY;
     }
 }

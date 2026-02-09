@@ -25,36 +25,31 @@ public class Player extends Entity {
         }
 
         rect = new Rectangle(getX(), getY(), getMaskWidth(), getMaskHeight());
+        isAnimated = true;
         direction = Direction.RIGHT;
     }
 
     public void tick() {
-        rect.setBounds(getX(), getY(), getMaskWidth(), getMaskHeight());
-        if (direction.equals(Direction.RIGHT) && Map.checkCollision((getX() + getSpeed()), getY(), rect, Direction.RIGHT)) {
+        maskX = x - 1;
+        maskY = y + 1;
+
+        rect.setBounds(getMaskX(), getMaskY(), getMaskWidth(), getMaskHeight());
+        if (direction.equals(Direction.RIGHT) && Map.checkCollision((getMaskX() + getSpeed()), getMaskY(), rect, Direction.RIGHT)) {
             x += speed;
         }
-        if (direction.equals(Direction.LEFT) && Map.checkCollision((getX() - getSpeed()), getY(), rect, Direction.LEFT)) {
+        if (direction.equals(Direction.LEFT) && Map.checkCollision((getMaskX() - getSpeed()), getMaskY(), rect, Direction.LEFT)) {
             x -= speed;
         }
 
-        if (direction.equals(Direction.UP) && Map.checkCollision(getX(), (getY() - getSpeed()), rect, Direction.UP)) {
+        if (direction.equals(Direction.UP) && Map.checkCollision(getMaskX(), (getMaskY() - getSpeed()), rect, Direction.UP)) {
             y -= speed;
         }
 
-        if (direction.equals(Direction.DOWN) && Map.checkCollision(getX(), (getY() + getSpeed()), rect, Direction.DOWN)) {
+        if (direction.equals(Direction.DOWN) && Map.checkCollision(getMaskX(), (getMaskY() + getSpeed()), rect, Direction.DOWN)) {
             y += speed;
         }
 
-        maskX = x - 1;
-        maskY = y + 1;
-        frames++;
-
-        if (frames == maxFrames) {
-            frames = 0;
-            animationIndex++;
-
-            if (animationIndex > maxAnimationIndex) animationIndex = 0;
-        }
+        super.tick();
     }
 
     @Override
@@ -63,8 +58,8 @@ public class Player extends Entity {
         float centerX = getX() + (getWidth() / 2f);
         float centerY = getY() + (getHeight() / 2f);
 
-        /*g.setColor(Color.red);
-        g.drawRect(getMaskX(), getMaskY(), getMaskWidth(), getMaskHeight());*/
+        g.setColor(Color.red);
+        g.drawRect(getMaskX(), getMaskY(), getMaskWidth(), getMaskHeight());
 
         if (direction.equals(Direction.LEFT)) {
             double angle = Math.toRadians(180);

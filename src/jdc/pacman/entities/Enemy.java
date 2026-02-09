@@ -3,11 +3,15 @@ package jdc.pacman.entities;
 import jdc.pacman.PacmanGame;
 import jdc.pacman.map.Map;
 import jdc.pacman.map.Node;
+import jdc.pacman.map.Tile;
 import jdc.pacman.map.Vector2i;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 public class Enemy extends Entity {
 
@@ -23,6 +27,9 @@ public class Enemy extends Entity {
     private BufferedImage[] animationUp = new BufferedImage[2];
 
     private EnemyType type;
+    private double lastX, lastY;
+    private boolean movingToTile;
+    private Tile targetedTile;
 
     protected List<Node> path;
 
@@ -37,6 +44,15 @@ public class Enemy extends Entity {
             case BLUE:
                 spriteX = 109;
                 break;
+            case YELLOW:
+                spriteX = 151;
+                break;
+            case GREEN:
+                spriteX = 193;
+                break;
+            case PURPLE:
+                spriteX = 235;
+                break;
         }
 
         for (int i = 0; i < 2; i++) {
@@ -48,8 +64,10 @@ public class Enemy extends Entity {
 
         maxAnimationIndex = 1;
         maxFrames = 7;
+        isAnimated = true;
+        depth = 2;
         rect = new Rectangle(getX(), getY(), getMaskWidth(), getMaskHeight());
-        direction = Direction.RIGHT;
+        direction = Direction.UP;
     }
 
     @Override
@@ -57,44 +75,60 @@ public class Enemy extends Entity {
 
         /*if (path == null || path.isEmpty()) {
             Vector2i start = new Vector2i(getX(), getY());
-            Vector2i end = new Vector2i(PacmanGame.player.getX() / 16, PacmanGame.player.getY() / 16);
+            Vector2i end = new Vector2i(PacmanGame.player.getX(), PacmanGame.player.getY());
             path = AStar.findPath(PacmanGame.world, start, end);
         }
 
         followPath(path);*/
 
-        rect.setBounds(getX(), getY(), getMaskWidth(), getMaskHeight());
-        if (direction.equals(Direction.RIGHT) && Map.checkCollision((getX() + getSpeed()), getY(), rect, Direction.RIGHT)) {
+        maskX = x + 2;
+        maskY = y + 1;
+        rect.setBounds(getMaskX(), getMaskY(), getMaskWidth(), getMaskHeight());
+
+        if (direction.equals(Direction.RIGHT) && Map.checkCollision((getMaskX() + getSpeed()), getMaskY(), rect, Direction.RIGHT)) {
             x += speed;
         }
-        if (direction.equals(Direction.LEFT) && Map.checkCollision((getX() - getSpeed()), getY(), rect, Direction.LEFT)) {
+        if (direction.equals(Direction.LEFT) && Map.checkCollision((getMaskX() - getSpeed()), getMaskY(), rect, Direction.LEFT)) {
             x -= speed;
         }
 
-        if (direction.equals(Direction.UP) && Map.checkCollision(getX(), (getY() - getSpeed()), rect, Direction.UP)) {
+        if (direction.equals(Direction.UP) && Map.checkCollision(getMaskX(), (getMaskY() - getSpeed()), rect, Direction.UP)) {
             y -= speed;
         }
 
-        if (direction.equals(Direction.DOWN) && Map.checkCollision(getX(), (getY() + getSpeed()), rect, Direction.DOWN)) {
+        if (direction.equals(Direction.DOWN) && Map.checkCollision(getMaskX(), (getMaskY() + getSpeed()), rect, Direction.DOWN)) {
             y += speed;
         }
 
-        maskX = x - 1;
-        maskY = y + 1;
-        frames++;
+        if (direction.equals(Direction.UP) && y == lastY && isNull(targetedTile)) {
+            Tile tile = Map.getClosestOpenedTile(getX(), getY(), rect, Direction.UP);
+            if (!isNull(tile)) {
+                targetedTile = tile;
+                movingToTile = true;
 
-        if (frames == maxFrames) {
-            frames = 0;
-            animationIndex++;
-
-            if (animationIndex > maxAnimationIndex) animationIndex = 0;
+                if (tile.getX() > getX()) direction = Direction.RIGHT;
+                if (tile.getX() < getX()) direction = Direction.LEFT;
+            }
         }
+
+        if (movingToTile) {
+            if (direction.equals(Direction.RIGHT) && getMaskX() == targetedTile.getX()) {
+                direction = Direction.UP;
+                movingToTile = false;
+                targetedTile = null;
+            }
+
+            //if (getMaskX() - 7 == targetedTile.getX())
+        }
+
+        if (lastY != y) lastY = y;
+        super.tick();
     }
 
     @Override
     public void render(Graphics2D g) {
-        /*g.setColor(Color.red);
-        g.drawRect(getMaskX(), getMaskY(), getMaskWidth(), getMaskHeight());*/
+        g.setColor(Color.red);
+        g.drawRect(getMaskX(), getMaskY(), getMaskWidth(), getMaskHeight());
 
         BufferedImage animation = null;
 
@@ -139,13 +173,13 @@ public class Enemy extends Entity {
                 //xprev = x;
                 //yprev = y;
 
-                if (x < target.x * 16) x++;
-                else if (x > target.x * 16) x--;
+                if (x < target.getX()) x++;
+                else if (x > target.getX()) x--;
 
-                if (y < target.y * 16) y++;
-                else if (y > target.y * 16) y--;
+                if (y < target.getY()) y++;
+                else if (y > target.getY()) y--;
 
-                if (x == target.x * 16 && y == target.y * 16) {
+                if (x == target.getX() && y == target.getY()) {
                     path.remove(path.size() - 1);
                 }
             }

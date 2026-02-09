@@ -1,5 +1,5 @@
 package jdc.pacman.entities;
 
 public enum EnemyType {
-    RED, BLUE, YELLOW
+    RED, BLUE, YELLOW, GREEN, PURPLE
 }

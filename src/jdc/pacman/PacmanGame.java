@@ -18,7 +18,7 @@ import java.util.Random;
 
 public class PacmanGame extends Canvas implements Runnable {
 
-    public static Random random = new Random();
+    public static final Random RANDOM = new Random();
 
     public boolean isRunning;
     public Thread thread;
@@ -43,13 +43,14 @@ public class PacmanGame extends Canvas implements Runnable {
         spritesheet = new Spritesheet("/spritesheet.png");
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         ui = new UI();
-        player = new Player(0,0);
+        player = new Player(100,100);
         keyboardCommands.setPlayer(player);
         addKeyListener(keyboardCommands);
         entities = new ArrayList<>();
         world = new Map("/level-1.png");
 
 
+        Collections.sort(entities, Entity.depthComparator);
         entities.add(player);
     }
 
@@ -108,7 +109,6 @@ public class PacmanGame extends Canvas implements Runnable {
 
         //RENDER GAME
         world.render(g2d);
-        Collections.sort(entities, Entity.depthComparator);
         for(int i = 0; i < entities.size(); i++) {
             Entity e = entities.get(i);
             e.render(g2d);

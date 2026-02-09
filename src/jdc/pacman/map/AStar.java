@@ -53,8 +53,8 @@ public class AStar {
 
             for (int i = 0; i < 9; i++) {
                 if (i == 4) continue;
-                int x = current.tile.x;
-                int y = current.tile.y;
+                int x = current.tile.getX();
+                int y = current.tile.getY();
                 int xi = (i%3) - 1;
                 int yi = (i/3) - 1;
 
@@ -111,8 +111,8 @@ public class AStar {
     }
 
     private static double getDistance(Vector2i start, Vector2i end) {
-        double dx = start.x - end.x;
-        double dy = start.y - end.y;
+        double dx = start.getX() - end.getX();
+        double dy = start.getY() - end.getY();
         return Math.sqrt(dx*dx + dy*dy);
     }
 }
