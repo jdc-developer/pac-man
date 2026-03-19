@@ -19,18 +19,18 @@ public class KeyboardCommands implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT ||
                 e.getKeyCode() == KeyEvent.VK_D) {
-            player.setDirection(Direction.RIGHT);
+            player.setDirectionToChange(Direction.RIGHT);
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT ||
                 e.getKeyCode() == KeyEvent.VK_A) {
-            player.setDirection(Direction.LEFT);
+            player.setDirectionToChange(Direction.LEFT);
         }
 
         if (e.getKeyCode() == KeyEvent.VK_UP ||
                 e.getKeyCode() == KeyEvent.VK_W) {
-            player.setDirection(Direction.UP);
+            player.setDirectionToChange(Direction.UP);
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN ||
                 e.getKeyCode() == KeyEvent.VK_S) {
-            player.setDirection(Direction.DOWN);
+            player.setDirectionToChange(Direction.DOWN);
         }
     }
 

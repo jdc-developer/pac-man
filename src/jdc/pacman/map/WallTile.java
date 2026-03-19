@@ -24,7 +24,7 @@ public class WallTile extends Tile {
         }*/
 
         g.setColor(WALL_COLOR);
-        g.drawRect(x, y, 1, 1);
+        g.drawRect(x, y, 0, 0);
     }
 
     public boolean hasHit() {

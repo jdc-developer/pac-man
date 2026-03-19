@@ -1,5 +1,7 @@
 package jdc.pacman.entities;
 
+import jdc.pacman.map.Tile;
+
 import java.awt.*;
 import java.util.Comparator;
 
@@ -21,6 +23,7 @@ public abstract class Entity {
     protected int frames = 0, maxFrames = 5, animationIndex = 0, maxAnimationIndex = 2;
     protected int depth;
     protected boolean isAnimated;
+    protected Tile targetedTile;
 
     public Entity(double x, double y, float width, float height, float speed, float maskWidth, float maskHeight) {
         this.x = x;
@@ -32,14 +35,10 @@ public abstract class Entity {
         this.maskHeight = maskHeight;
     }
 
-    public static Comparator<Entity> depthComparator = new Comparator<Entity>(){
-
-        @Override
-        public int compare(Entity o1, Entity o2) {
-            if (o1.depth < o2.depth) return - 1;
-            if (o1.depth > o2.depth) return + 1;
-            return 0;
-        }
+    public static Comparator<Entity> depthComparator = (o1, o2) -> {
+        if (o1.depth < o2.depth) return - 1;
+        if (o1.depth > o2.depth) return + 1;
+        return 0;
     };
 
     public void tick() {
@@ -86,10 +85,6 @@ public abstract class Entity {
 
     public Direction getDirection() {
         return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
     }
 
     public int getMaskWidth() {

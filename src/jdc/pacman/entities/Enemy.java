@@ -9,7 +9,6 @@ import jdc.pacman.map.Vector2i;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -29,7 +28,6 @@ public class Enemy extends Entity {
     private EnemyType type;
     private double lastX, lastY;
     private boolean movingToTile;
-    private Tile targetedTile;
 
     protected List<Node> path;
 
@@ -101,7 +99,7 @@ public class Enemy extends Entity {
         }
 
         if (direction.equals(Direction.UP) && y == lastY && isNull(targetedTile)) {
-            Tile tile = Map.getClosestOpenedTile(getX(), getY(), rect, Direction.UP);
+            Tile tile = Map.getClosestOpenedTile(getX(), getMaskY() - 2, rect, Direction.UP, direction);
             if (!isNull(tile)) {
                 targetedTile = tile;
                 movingToTile = true;
@@ -112,16 +110,15 @@ public class Enemy extends Entity {
         }
 
         if (movingToTile) {
-            if (direction.equals(Direction.RIGHT) && getMaskX() == targetedTile.getX()) {
+            if (getMaskX() == targetedTile.getX()) {
                 direction = Direction.UP;
                 movingToTile = false;
                 targetedTile = null;
             }
-
-            //if (getMaskX() - 7 == targetedTile.getX())
         }
 
         if (lastY != y) lastY = y;
+        if (lastX != x) lastX = x;
         super.tick();
     }
 
