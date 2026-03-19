@@ -1,15 +1,15 @@
 package jdc.pacman.map;
 
 import jdc.pacman.PacmanGame;
-import jdc.pacman.entities.*;
-import org.w3c.dom.css.Rect;
+import jdc.pacman.entities.Direction;
+import jdc.pacman.entities.Dot;
+import jdc.pacman.entities.Enemy;
+import jdc.pacman.entities.EnemyType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import static java.util.Objects.isNull;
 
 public class Map {
 
@@ -108,56 +108,98 @@ public class Map {
         return true;
     }
 
-    private static Tile findUpDownTileBasedOnObjectInfo(int x, int y, Direction currentDirection) {
+    private static Tile findTileBasedOnObjectInfo(int x, int y, Direction currentDirection, Rectangle rect, int dimension)
+            throws ArrayIndexOutOfBoundsException {
 
-        if (Direction.RIGHT.equals(currentDirection)) {
-            for (int i = 0; i < WIDTH; i++) {
-                int verifyX = x + i;
-                Tile tile = tiles[verifyX + (y * WIDTH)];
-                if (!(tile instanceof WallTile)) return tile;
+        int verifyX = 0;
+        int verifyY = 0;
+
+        for (int i = 0; i < dimension; i++) {
+            switch (currentDirection) {
+                case LEFT:
+                    verifyX = x - i;
+                    verifyY = y;
+                    break;
+                case RIGHT:
+                    verifyX = x + i;
+                    verifyY = y;
+                    break;
+                case UP:
+                    verifyX = x;
+                    verifyY = y - i;
+                    break;
+                case DOWN:
+                    verifyX = x;
+                    verifyY = y + i;
+                    break;
             }
-        } else {
-            for (int i = 0; i < WIDTH; i++) {
-                int verifyX = x - i;
-                Tile tile = tiles[verifyX + (y * WIDTH)];
-                if (!(tile instanceof WallTile)) return tile;
-            }
+
+            Tile tile = tiles[verifyX + (verifyY * WIDTH)];
+            if (tile instanceof WallTile) continue;
+
+            if (!checkWallTileForNextTiles(x, y, currentDirection, rect, dimension)) return tile;
         }
 
         return null;
     }
 
-    private static Tile findRightLeftTileBasedOnObjectInfo(int x, int y, Direction currentDirection) {
+    private static boolean checkWallTileForNextTiles(int x, int y, Direction currentDirection, Rectangle rect, int dimension) {
+        int verifyXNextTiles = 0;
+        int verifyYNextTiles = 0;
+        boolean foundWallTile = false;
 
-        if (Direction.DOWN.equals(currentDirection)) {
-            for (int i = 0; i < HEIGHT; i++) {
-                int verifyY = y + i;
-                Tile tile = tiles[x + (verifyY * WIDTH)];
-                if (!(tile instanceof WallTile)) return tile;
+        double secondDimension = 0;
+        if (dimension == WIDTH) secondDimension = rect.getWidth();
+        else secondDimension = rect.getHeight();
+
+        for (int j = 0; j < secondDimension; j++) {
+            switch (currentDirection) {
+                case LEFT:
+                    verifyXNextTiles = x - j;
+                    verifyYNextTiles = y;
+                    break;
+                case RIGHT:
+                    verifyXNextTiles = x + j;
+                    verifyYNextTiles = y;
+                    break;
+                case UP:
+                    verifyXNextTiles = x;
+                    verifyYNextTiles = y - j;
+                    break;
+                case DOWN:
+                    verifyXNextTiles = x;
+                    verifyYNextTiles = y + j;
+                    break;
             }
-        } else {
-            for (int i = 0; i < HEIGHT; i++) {
-                int verifyY = y - i;
-                Tile tile = tiles[x + (verifyY * WIDTH)];
-                if (!(tile instanceof WallTile)) return tile;
+
+            Tile checkTile = tiles[verifyXNextTiles + (verifyYNextTiles * WIDTH)];
+            if (checkTile instanceof WallTile) {
+                foundWallTile = true;
+                break;
             }
         }
 
-        return null;
+        System.out.println("Found wall tile: " + foundWallTile);
+
+        return foundWallTile;
     }
 
     public static Tile getClosestOpenedTile(int x, int y, Rectangle rect, Direction direction, Direction currentDirection) {
-        switch (direction) {
-            case UP:
-                return findUpDownTileBasedOnObjectInfo(x, y, currentDirection);
-            case DOWN:
-                int startY = y + (int) rect.getHeight();
-                return findUpDownTileBasedOnObjectInfo(x, startY, currentDirection);
-            case LEFT:
-                return findRightLeftTileBasedOnObjectInfo(x, y, currentDirection);
-            case RIGHT:
-                int startX = x + (int)rect.getWidth();
-                return findRightLeftTileBasedOnObjectInfo(startX, y, currentDirection);
+        try {
+            switch (direction) {
+                case UP:
+                    return findTileBasedOnObjectInfo(x, y, currentDirection, rect, WIDTH);
+                case DOWN:
+                    int startY = y + (int) rect.getHeight();
+                    return findTileBasedOnObjectInfo(x, startY, currentDirection, rect, WIDTH);
+                case LEFT:
+                    return findTileBasedOnObjectInfo(x, y, currentDirection, rect, HEIGHT);
+                case RIGHT:
+                    int startX = x + (int)rect.getWidth();
+                    return findTileBasedOnObjectInfo(startX, y, currentDirection, rect, HEIGHT);
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
         }
 
         return null;
